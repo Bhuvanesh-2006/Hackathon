@@ -1,0 +1,367 @@
+<title>RetailPilot Build Report</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column (max 980px) of titled sections; tables scroll inside their own frame. */
+:root {
+  --bg: #f4f6fb;
+  --surface: #ffffff;
+  --ink: #0d1430;
+  --muted: #56607d;
+  --line: #dde2ee;
+  --accent: #0062d6;
+  --accent-soft: #e5efff;
+  --good: #0a7d52;
+  --good-soft: #e2f5ec;
+  --warn: #9a5a00;
+  --warn-soft: #fff3df;
+  --code-bg: #eef1f8;
+  --font-display: "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", Consolas, "Courier New", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #060b26; --surface: #0f1a42; --ink: #eef2ff; --muted: #a0aec0; --line: #24305e;
+    --accent: #4c9bff; --accent-soft: #14295c; --good: #3ed69a; --good-soft: #0e3a2c;
+    --warn: #ffbd5c; --warn-soft: #3d2c0d; --code-bg: #0a1233; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #060b26; --surface: #0f1a42; --ink: #eef2ff; --muted: #a0aec0; --line: #24305e;
+  --accent: #4c9bff; --accent-soft: #14295c; --good: #3ed69a; --good-soft: #0e3a2c;
+  --warn: #ffbd5c; --warn-soft: #3d2c0d; --code-bg: #0a1233; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body);
+  font-size: 15px; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 40px 64px;
+}
+.wrap { max-width: 980px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.2; }
+h1 { font-size: clamp(1.9rem, 4.5vw, 2.6rem); font-weight: 800; letter-spacing: -0.02em; }
+h2 { font-size: 1.35rem; font-weight: 700; }
+h3 { font-size: 1rem; font-weight: 700; }
+p { margin: 0; max-width: 68ch; }
+code, .mono { font-family: var(--font-mono); font-size: 0.86em; }
+code { background: var(--code-bg); padding: 1px 6px; border-radius: 5px; }
+a { color: var(--accent); }
+
+header { display: flex; flex-direction: column; gap: 14px; }
+.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+.lede { color: var(--muted); font-size: 1.05rem; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); }
+.chip.good { color: var(--good); background: var(--good-soft); border-color: transparent; }
+.chip.warn { color: var(--warn); background: var(--warn-soft); border-color: transparent; }
+
+.figures { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.fig { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.fig b { font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+.fig span { color: var(--muted); font-size: 13px; }
+@media (max-width: 760px) { .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+section { display: flex; flex-direction: column; gap: 16px; }
+.sec-head { display: flex; flex-direction: column; gap: 6px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+.sec-head p { color: var(--muted); }
+
+.callout { border-radius: 14px; padding: 18px 20px; display: flex; flex-direction: column; gap: 8px; background: var(--accent-soft); }
+.callout.warn { background: var(--warn-soft); }
+.callout h3 { color: var(--accent); }
+.callout.warn h3 { color: var(--warn); }
+
+.table-frame { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+th { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); background: var(--code-bg); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td.num { font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; }
+td:first-child { font-weight: 600; }
+.log td:first-child { font-weight: 400; }
+.tag { display: inline-block; font-size: 11.5px; font-weight: 700; padding: 1px 8px; border-radius: 6px; white-space: nowrap; }
+.tag.fix { color: var(--warn); background: var(--warn-soft); }
+.tag.ok { color: var(--good); background: var(--good-soft); }
+
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 760px) { .grid2 { grid-template-columns: 1fr; } }
+.grid2 > * { min-width: 0; }
+
+ol.steps { list-style: none; counter-reset: step; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0; }
+ol.steps > li { counter-increment: step; display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px dashed var(--line); }
+ol.steps > li:last-child { border-bottom: 0; }
+ol.steps > li::before { content: counter(step); width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; font-weight: 700; font-size: 13px; color: var(--accent); background: var(--accent-soft); font-variant-numeric: tabular-nums; }
+ol.steps b { display: block; }
+ol.steps span { color: var(--muted); }
+ul.plain { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+ul.plain li { max-width: 68ch; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; }
+footer { color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Hackathon PS 1.2 · Ask-Your-Data Sales Agent</div>
+  <h1>RetailPilot build report</h1>
+  <p class="lede">Everything executed so far: the tech stack, the three pipelines (data, question answering, benchmark), the safety layers, and what is still open.</p>
+  <div class="meta">
+    <span class="chip">22 Oct 2026</span>
+    <span class="chip good">75/75 backend tests pass</span>
+    <span class="chip good">App runs on desktop, tablet, mobile</span>
+    <span class="chip warn">Live LLM not yet benchmarked (no API key)</span>
+  </div>
+</header>
+
+<div class="figures">
+  <div class="fig"><b>1,044,848</b><span>transaction rows loaded</span></div>
+  <div class="fig"><b>22,523</b><span>duplicate rows removed (sheet overlap)</span></div>
+  <div class="fig"><b>15</b><span>trap questions in the benchmark</span></div>
+  <div class="fig"><b>6</b><span>app pages, all working</span></div>
+</div>
+
+<div class="callout">
+  <h3>No embeddings, no vector database, no RAG</h3>
+  <p>The project uses no embeddings model, no vector store and no retrieval step. The data is one table with 17 columns, so the full schema and every business rule fit in the prompt. Retrieval would add moving parts without improving answers, and the brief asked not to add vector databases without a real need. There is also no LangChain, LangGraph or multi-agent framework: the agent is a plain Python loop with fixed steps.</p>
+</div>
+
+<section>
+  <div class="sec-head">
+    <h2>Execution log</h2>
+    <p>What was run, in order, and what each step found.</p>
+  </div>
+  <div class="table-frame">
+    <table class="log">
+      <thead><tr><th>#</th><th>Step</th><th>Result</th></tr></thead>
+      <tbody>
+        <tr><td class="num">1</td><td>Inspected the project folder</td><td>Found the Excel workbook, its zip, the UI reference image and the instructions PNG</td></tr>
+        <tr><td class="num">2</td><td>Checked tools</td><td>Python 3.13.14 present; Node.js missing</td></tr>
+        <tr><td class="num">3</td><td>Installed Node.js LTS with <code>winget</code></td><td>npm 11.19.0 available</td></tr>
+        <tr><td class="num">4</td><td>Installed Python packages with <code>pip</code></td><td>See the stack tables below</td></tr>
+        <tr><td class="num">5</td><td>First data load</td><td><span class="tag fix">Fixed</span> Crashed because some descriptions are stored as numbers in Excel</td></tr>
+        <tr><td class="num">6</td><td>Second data load</td><td><span class="tag fix">Found</span> Both worksheets contain 1–9 Dec 2010 (22,523 rows). Added an exact-match check, then removed the second copy</td></tr>
+        <tr><td class="num">7</td><td>Final data load</td><td>1,067,371 source rows → 1,044,848 loaded, every row classified</td></tr>
+        <tr><td class="num">8</td><td>Built the SQL validator</td><td><span class="tag ok">Pass</span> 4 safe queries accepted, 14 attack queries rejected</td></tr>
+        <tr><td class="num">9</td><td>Built the agent and the no-LLM fallback planner</td><td><span class="tag ok">Pass</span> 12 example questions answered correctly</td></tr>
+        <tr><td class="num">10</td><td>Ran the benchmark</td><td><span class="tag fix">Fixed</span> 14/15 at first: a postage question was routed to cancellations. Fixed in the planner, then 15/15</td></tr>
+        <tr><td class="num">11</td><td>Exercised the API with the test client</td><td><span class="tag fix">Fixed</span> A dashboard query had a duplicated filter clause</td></tr>
+        <tr><td class="num">12</td><td>Ran pytest</td><td><span class="tag fix">Fixed</span> A clarification answer containing "cancellations" misrouted the planner. Suite grew to 72 passing</td></tr>
+        <tr><td class="num">13</td><td>Validated the chart colour palette</td><td><span class="tag ok">Pass</span> Colour-blind separation and contrast checks on the dark card surface</td></tr>
+        <tr><td class="num">14</td><td>Built and typechecked the frontend</td><td><span class="tag ok">Pass</span> No type errors</td></tr>
+        <tr><td class="num">15</td><td>Browser screenshots with Playwright and Edge</td><td><span class="tag fix">Fixed</span> Server crashed when several queries ran at once. Now one shared read-only database with a separate cursor per query</td></tr>
+        <tr><td class="num">16</td><td>Screenshots at 390, 768 and 1440 px</td><td><span class="tag fix">Fixed</span> No sideways scrolling or console errors. Chart labels overlapped on phones, switched to horizontal bars</td></tr>
+        <tr><td class="num">17</td><td>Clicked through the UI</td><td><span class="tag ok">Pass</span> Benchmark run, Data Explorer filter (19,165 cancellation rows), reopening a query from history</td></tr>
+        <tr><td class="num">18</td><td>Called the Anthropic adapter against a local fake of the API</td><td><span class="tag ok">Pass</span> Request format and response parsing confirmed; the key never appears in responses</td></tr>
+        <tr><td class="num">19</td><td>Ran the init and benchmark scripts, the production build, and single-process serving on port 8000</td><td><span class="tag ok">Pass</span> All worked</td></tr>
+        <tr><td class="num">20</td><td>Checked demo-script numbers against live queries</td><td><span class="tag fix">Fixed</span> Numbers matched; negative £ amounts were printed as £-71,499.40</td></tr>
+        <tr><td class="num">21</td><td>Asked “On which invoice date the product has generated maximum revenue”</td><td><span class="tag fix">Fixed</span> The fallback planner ignored the date and answered a different question. It now asks which of three readings is meant and answers each correctly, using net revenue so a same-day cancelled order (£168k gross, £0 net) cannot win. Also fixed a validator bug with aliased CTEs. 3 new tests</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h2>Tech stack</h2>
+    <p>Versions are the ones installed and tested in this environment.</p>
+  </div>
+  <div class="grid2">
+    <div class="table-frame">
+      <table>
+        <thead><tr><th>Backend (Python 3.13)</th><th>Package</th></tr></thead>
+        <tbody>
+          <tr><td>API server</td><td>FastAPI 0.159.1, Uvicorn 0.54.0</td></tr>
+          <tr><td>Data models, settings</td><td>Pydantic 2.11.9, pydantic-settings 2.16.1</td></tr>
+          <tr><td>Analytics database</td><td>DuckDB 1.5.5 (local file, read-only)</td></tr>
+          <tr><td>Excel loading</td><td>pandas 2.3.0, openpyxl 3.1.5, pyarrow 26.0.0</td></tr>
+          <tr><td>SQL checking</td><td>SQLGlot 30.24.0 (DuckDB dialect)</td></tr>
+          <tr><td>LLM access</td><td>anthropic SDK 2.1.0</td></tr>
+          <tr><td>History, benchmark runs</td><td>SQLite (standard library), separate file</td></tr>
+          <tr><td>Tests</td><td>pytest 9.1.1, httpx 0.28.1</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-frame">
+      <table>
+        <thead><tr><th>Frontend</th><th>Package</th></tr></thead>
+        <tbody>
+          <tr><td>Framework</td><td>React 18.3, TypeScript 5.6, Vite 6</td></tr>
+          <tr><td>Components, theme</td><td>Material UI 6.5.0, dark theme modelled on Vision UI</td></tr>
+          <tr><td>Results table</td><td>MUI X DataGrid 7.29.13</td></tr>
+          <tr><td>Charts</td><td>Recharts 2.15</td></tr>
+          <tr><td>Routing</td><td>React Router 6.28</td></tr>
+          <tr><td>SQL highlighting</td><td>prism-react-renderer 2.4</td></tr>
+          <tr><td>Fonts</td><td>Plus Jakarta Sans, JetBrains Mono</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-frame">
+      <table>
+        <thead><tr><th>LLM</th><th>Setting</th></tr></thead>
+        <tbody>
+          <tr><td>Provider</td><td>Anthropic</td></tr>
+          <tr><td>Model</td><td><code>claude-opus-5-5</code>, configurable in <code>.env</code></td></tr>
+          <tr><td>Output</td><td>Structured JSON: <code>messages.parse</code> returns a validated <code>AgentPlan</code></td></tr>
+          <tr><td>Effort</td><td><code>low</code>, configurable</td></tr>
+          <tr><td>If the model declines</td><td>Anthropic retries on a backup model in the same call (<code>fallbacks: "default"</code>)</td></tr>
+          <tr><td>Without an API key</td><td>Rule-based planner with no AI, labelled in the UI</td></tr>
+          <tr><td>Embeddings</td><td>None</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-frame">
+      <table>
+        <thead><tr><th>Build tools, deployment</th><th>Detail</th></tr></thead>
+        <tbody>
+          <tr><td>UI testing</td><td>Playwright driving the installed Edge browser</td></tr>
+          <tr><td>Chart colours</td><td>Palette validator from the dataviz guide</td></tr>
+          <tr><td>Node.js</td><td>Installed with winget (LTS)</td></tr>
+          <tr><td>Serving</td><td>One process: FastAPI serves the API and the built frontend</td></tr>
+          <tr><td>Container</td><td>Dockerfile written, not built (no Docker here)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h2>Pipeline 1: data preparation</h2>
+    <p><code>backend/scripts/prepare_data.py</code>, run once. Takes about a minute.</p>
+  </div>
+  <div class="card">
+    <ol class="steps">
+      <li><div><b>Read both Excel sheets</b><span>Raw rows are cached as Parquet so later runs skip the 28-second Excel read.</span></div></li>
+      <li><div><b>Normalise types</b><span>Invoice numbers and stock codes become text; customer IDs lose the trailing ".0" Excel adds.</span></div></li>
+      <li><div><b>Remove the worksheet overlap</b><span>Confirm the 1–9 Dec 2010 rows are identical in both sheets, then drop the second copy. This is the only removal.</span></div></li>
+      <li><div><b>Classify every row</b><span>Line type (sale, cancellation, stock adjustment, zero price, bad-debt adjustment), item type (product, postage, fee, manual adjustment, discount, sample, test, gift voucher) and whether a customer ID is present.</span></div></li>
+      <li><div><b>Add derived columns</b><span><code>line_amount</code> (quantity × price), invoice month and year.</span></div></li>
+      <li><div><b>Write the database</b><span>Tables <code>transactions</code> and <code>dataset_metadata</code> in <code>retail.duckdb</code>, about 20 MB.</span></div></li>
+    </ol>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h2>Pipeline 2: answering a question</h2>
+    <p><code>POST /api/agent/query</code>. Runs on every question.</p>
+  </div>
+  <div class="card">
+    <ol class="steps">
+      <li><div><b>Check the input</b><span>Question length, conversation ID format, and that the dataset is loaded.</span></div></li>
+      <li><div><b>Ambiguity check</b><span>Fixed rules catch phrasing like "best customers" and return a clarifying question with options.</span></div></li>
+      <li><div><b>Load conversation context</b><span>The last 4 turns from SQLite, so follow-ups like "now only for Germany" work.</span></div></li>
+      <li><div><b>Build the prompt</b><span>Full schema, business rules and response instructions. Nothing is retrieved.</span></div></li>
+      <li><div><b>Call the LLM</b><span>Returns a plan: intent (answer, ask back, decline), SQL, explanation, rules used and a chart suggestion.</span></div></li>
+      <li><div><b>Check the SQL with SQLGlot</b><span>One SELECT statement only; only the <code>transactions</code> table and its known columns; no file, system or settings functions. The query is rewritten from its parsed form, and that text is what runs and what the UI shows.</span></div></li>
+      <li><div><b>Run it</b><span>On a shared read-only DuckDB instance with file and network access off and settings locked. Each query gets its own cursor. A timer stops it after 10 seconds; results are capped at 1,000 rows.</span></div></li>
+      <li><div><b>Retry once on failure</b><span>If the check or the database rejects the SQL, the error goes back to the model once and the new SQL is checked again.</span></div></li>
+      <li><div><b>Build the response</b><span>Status is one of success, empty, clarification, unsupported, rejected or error. The summary is generated from the returned rows, so it cannot contain numbers the query did not return. The chart type is checked against the actual result columns.</span></div></li>
+      <li><div><b>Save to history</b><span>Question, SQL, status, timings and up to 200 rows. API keys are never stored.</span></div></li>
+    </ol>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h2>Pipeline 3: reliability benchmark</h2>
+    <p>Run from the Benchmark page or <code>python -m scripts.run_benchmark</code>.</p>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <h3>The 15 questions</h3>
+      <ul class="plain">
+        <li>10 with a numeric answer: top products, monthly revenue, countries, cancelled value, cancellation count, returned units, missing customer IDs, postage, orders, top customers</li>
+        <li>2 that must trigger a clarifying question</li>
+        <li>1 that must return no data (revenue in 2015)</li>
+        <li>1 unsupported (profit margin; there is no cost data)</li>
+        <li>1 unsafe (delete cancelled invoices)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>How answers are scored</h3>
+      <ul class="plain">
+        <li>Reference answers come from hand-written SQL on the raw columns, not the derived ones the agent uses, so a pass also checks the data preparation</li>
+        <li>Rows are matched by key regardless of order; numbers may differ by 0.5% or £0.51</li>
+        <li>Reported separately: overall pass rate, exact result match, SQL execution success, clarification success, unsupported and empty handling</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h2>Data rules applied</h2>
+    <p>Defined once in <code>business_rules.py</code> and used by the prompt, dashboard, benchmark and UI.</p>
+  </div>
+  <div class="table-frame">
+    <table>
+      <thead><tr><th>Topic</th><th>Rule</th></tr></thead>
+      <tbody>
+        <tr><td>Currency</td><td>All money in GBP (£). <code>line_amount = quantity × unit_price</code></td></tr>
+        <tr><td>Period</td><td>2009-12-01 to 2011-12-09. December 2011 is a partial month</td></tr>
+        <tr><td>Net revenue</td><td>The default meaning of "revenue": product sales minus cancellations</td></tr>
+        <tr><td>Gross revenue</td><td>Product sales before cancellations</td></tr>
+        <tr><td>Cancellations</td><td>Invoices starting with "C". Subtracted in net revenue, reported separately elsewhere</td></tr>
+        <tr><td>Returns</td><td>Returned units and number of return invoices are separate measures. Stock write-offs (3,393 lines with negative quantity) are not returns</td></tr>
+        <tr><td>Non-product codes</td><td>Postage, fees, manual adjustments, discounts, samples, tests and gift vouchers are excluded from product revenue</td></tr>
+        <tr><td>Missing customer IDs</td><td>235,287 lines (22.5%). Kept in totals, excluded from customer rankings, and stated in answers</td></tr>
+        <tr><td>Duplicates</td><td>11,812 exact duplicates within a sheet are kept (they cannot be proven wrong) and counted in the Data Explorer</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h2>Safety layers</h2>
+    <p>Each layer works on its own; the prompt is not relied on for safety.</p>
+  </div>
+  <div class="table-frame">
+    <table>
+      <thead><tr><th>Layer</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td>SQL validator</td><td>SQLGlot parse; one SELECT; table and column allowlist; blocks file, system and settings functions</td></tr>
+        <tr><td>Read-only database</td><td>Opened read-only with external access off and settings locked. A test proves unchecked SQL still cannot write or read files</td></tr>
+        <tr><td>Limits</td><td>10-second timeout, 1,000-row cap, 500-character questions, one SQL retry</td></tr>
+        <tr><td>LLM output</td><td>Treated as untrusted JSON. The model never runs code, shell commands or file operations</td></tr>
+        <tr><td>Errors</td><td>Short messages with a code, no stack traces</td></tr>
+        <tr><td>Secrets</td><td>API key read from the backend environment only; never sent to the browser or stored</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h2>Results and open items</h2>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <h3>Measured</h3>
+      <ul class="plain">
+        <li>75/75 backend tests pass</li>
+        <li>Benchmark: 15/15 with the rule-based planner. This shows the pipeline and reference answers work. It says nothing about LLM accuracy, because the planner's rules were written for these question types</li>
+        <li>All pages checked at 390, 768 and 1440 px: no sideways scrolling, no console errors</li>
+      </ul>
+    </div>
+    <div class="callout warn">
+      <h3>Still open</h3>
+      <ul class="plain">
+        <li>Benchmark the real LLM: add <code>ANTHROPIC_API_KEY</code> to <code>backend/.env</code>, restart, and press Run benchmark</li>
+        <li>Build and test the Dockerfile (Docker is not available on this machine)</li>
+        <li>The Figma file could not be opened; the design follows the uploaded screenshot</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer>
+  RetailPilot · UCI Online Retail II (CC BY 4.0) · Setup and API details are in <code>README.md</code> and <code>docs/API.md</code>.
+</footer>
+
+</div>

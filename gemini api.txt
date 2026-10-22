@@ -1,0 +1,16 @@
+gemini api
+
+AQ.Ab8RN6L-3sI81Hn5IX_m_Fus_9BOcb3BsorkfqxnuX5rwf5kCw
+
+
+# LLM provider: "auto" (default: DeepSeek if DEEPSEEK_API_KEY is set, else Anthropic if
+# ANTHROPIC_API_KEY is set, else the offline rule-based planner), "deepseek", "anthropic" or "offline".
+LLM_PROVIDER=auto
+DEEPSEEK_API_KEY=sk-e7d4e1d45fc84b2bb239d0ac6aa0bca4
+DEEPSEEK_MODEL=deepseek-chat
+DEEPSEEK_BASE_URL=https://api.deepseek.com
+ANTHROPIC_API_KEY=
+ANTHROPIC_MODEL=claude-opus-5-5
+# low | medium | high  (Anthropic only)
+ANTHROPIC_EFFORT=low
+LLM_TIMEOUT_SECONDS=60

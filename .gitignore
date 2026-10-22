@@ -1,0 +1,16 @@
+# Secrets
+.env
+backend/.env
+# Data (large / derived)
+backend/data/
+online+retail+ii/
+*.xlsx
+*.zip
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+# Node
+frontend/node_modules/
+frontend/dist/
